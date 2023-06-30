@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Monitoring System</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Chart.js CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo">
+            <h1>Monitoring System</h1>
+        </header>
+
+        <div id="charts-container">
+            <div class="chart-container">
+                <h2>CPU Usage</h2>
+                <canvas id="cpu-chart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h2>Memory Usage</h2>
+                <canvas id="memory-chart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <h2>Disk Usage</h2>
+                <canvas id="disk-chart"></canvas>
+            </div>
+        </div>
+
+        <div id="network-container">
+            <h2>Network Activity</h2>
+            <table id="network-table">
+                <tr>
+                    <th>Interface</th>
+                    <th>Bytes Sent</th>
+                    <th>Bytes Received</th>
+                </tr>
+            </table>
+        </div>
+
+        <div id="connections-container">
+            <h2>Active Connections</h2>
+            <table id="connections-table">
+                <tr>
+                    <th>Local Address</th>
+                    <th>Remote Address</th>
+                    <th>Status</th>
+                    <th>Process Name</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
