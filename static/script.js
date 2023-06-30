@@ -107,3 +107,29 @@ function updateConnectionsTable(connectionData) {
         processNameCell.textContent = data.process_name;
     });
 }
+
+function searchConnections() {
+    var input = document.getElementById('search-input');
+    var filter = input.value.toUpperCase();
+
+    var connectionsTable = document.getElementById('connections-table');
+    var rows = connectionsTable.getElementsByTagName('tr');
+
+    for (var i = 0; i < rows.length; i++) {
+        var processNameCell = rows[i].getElementsByTagName('td')[3];
+        if (processNameCell) {
+            var processName = processNameCell.textContent || processNameCell.innerText;
+            if (processName.toUpperCase().indexOf(filter) > -1) {
+                rows[i].style.display = '';
+            } else {
+                rows[i].style.display = 'none';
+            }
+        }
+    }
+}
+
+// Appeler fetchData() et ajouter l'événement onchange pour le menu déroulant lors du chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+    fetchData();
+    document.getElementById('interface-select').addEventListener('change', applyFilters);
+});

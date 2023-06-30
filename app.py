@@ -6,7 +6,8 @@ app = Flask(__name__)
 # Route principale
 @app.route('/')
 def index():
-    return render_template('index.html')
+    interfaces = get_available_interfaces()
+    return render_template('index.html', interfaces=interfaces)
 
 # Fonction pour formater les octets en format lisible
 def format_bytes(size, decimal_places=2):
@@ -15,6 +16,11 @@ def format_bytes(size, decimal_places=2):
             break
         size /= 1024.0
     return f"{size:.{decimal_places}f} {unit}"
+# Fonction pour obtenir les interfaces disponibles
+def get_available_interfaces():
+    io_counters = psutil.net_io_counters(pernic=True)
+    interfaces = list(io_counters.keys())
+    return interfaces
 
 # Route pour récupérer les données de monitoring
 @app.route('/data')

@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
     <!-- Chart.js CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.5.1/dist/chart.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-AxI1kmNUuqqpNtoNCV9C2/8/siWtftl0u7YEFVwPv2eu+D0C7THOAmFSsFpQJgFsI67fFQTKQoju7aU3FPTCyQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <div class="container">
@@ -13,6 +14,7 @@
             <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="logo">
             <h1>Monitoring System</h1>
         </header>
+        <button id="refresh-button" class="custom-button" onclick="refreshData()"><i class="fas fa-sync"></i> Refresh</button>
 
         <div id="charts-container">
             <div class="chart-container">
@@ -33,17 +35,30 @@
 
         <div id="network-container">
             <h2>Network Activity</h2>
+            <div class="filter-container">
+                <label for="interface-select">Interface:</label>
+                <select id="interface-select" class="custom-select" onchange="applyFilters()">
+                    <option value="all">All</option>
+                    {% for interface in interfaces %}
+                        <option value="{{ interface }}">{{ interface }}</option>
+                    {% endfor %}
+                </select>
+            </div>
             <table id="network-table">
                 <tr>
-                    <th>Interface</th>
-                    <th>Bytes Sent</th>
-                    <th>Bytes Received</th>
+                    <th data-sort="interface">Interface <i class="fas fa-sort"></i></th>
+                    <th data-sort="sent">Bytes Sent <i class="fas fa-sort"></i></th>
+                    <th data-sort="received">Bytes Received <i class="fas fa-sort"></i></th>
                 </tr>
             </table>
         </div>
 
         <div id="connections-container">
             <h2>Active Connections</h2>
+            <div class="search-container">
+                <input type="text" id="search-input" onkeyup="searchConnections()" placeholder="Search by Process Name...">
+                <button class="search-button" onclick="searchConnections()"><i class="fas fa-search"></i></button>
+            </div>
             <table id="connections-table">
                 <tr>
                     <th>Local Address</th>
