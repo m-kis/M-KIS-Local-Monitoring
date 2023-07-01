@@ -1,9 +1,23 @@
-document.addEventListener('DOMContentLoaded', function() {
-    fetchData(); // Appel initial pour récupérer les données
+function applyFilters() {
+    var interfaceSelect = document.getElementById('interface-select');
+    var selectedInterface = interfaceSelect.value;
 
-    // Récupère les données de monitoring toutes les 5 secondes
-    setInterval(fetchData, 5000);
-});
+    var networkTable = document.getElementById('network-table');
+    var rows = networkTable.getElementsByTagName('tr');
+
+    for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        var interfaceCell = row.getElementsByTagName('td')[0];
+        if (interfaceCell) {
+            var interfaceValue = interfaceCell.textContent || interfaceCell.innerText;
+            if (selectedInterface === 'all' || selectedInterface === interfaceValue) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        }
+    }
+}
 
 function fetchData() {
     fetch('/data')
@@ -14,13 +28,13 @@ function fetchData() {
             updateDiskChart(data.disk_percent);
             updateNetworkTable(data.network_data);
             updateConnectionsTable(data.connection_data);
+            checkPerformanceThresholds(data.cpu_percent, data.memory_percent);
         })
-        .catch(error => console.error('Erreur lors de la récupération des données:', error));
+        .catch(error => console.error('Error fetching data:', error));
 }
 
 function updateCPUChart(cpuPercent) {
     var cpuChartElement = document.getElementById('cpu-chart');
-
     var cpuChart = new Chart(cpuChartElement, {
         type: 'doughnut',
         data: {
@@ -38,7 +52,6 @@ function updateCPUChart(cpuPercent) {
 
 function updateMemoryChart(memoryPercent) {
     var memoryChartElement = document.getElementById('memory-chart');
-
     var memoryChart = new Chart(memoryChartElement, {
         type: 'doughnut',
         data: {
@@ -56,7 +69,6 @@ function updateMemoryChart(memoryPercent) {
 
 function updateDiskChart(diskPercent) {
     var diskChartElement = document.getElementById('disk-chart');
-
     var diskChart = new Chart(diskChartElement, {
         type: 'doughnut',
         data: {
@@ -74,10 +86,9 @@ function updateDiskChart(diskPercent) {
 
 function updateNetworkTable(networkData) {
     var networkTable = document.getElementById('network-table');
-    networkTable.innerHTML = ''; // Réinitialise le contenu de la table
+    networkTable.innerHTML = '';
 
-    // Ajoute les lignes de données à la table
-    networkData.forEach(function(data) {
+    networkData.forEach(function (data) {
         var row = networkTable.insertRow();
         var interfaceCell = row.insertCell();
         var sentCell = row.insertCell();
@@ -91,10 +102,9 @@ function updateNetworkTable(networkData) {
 
 function updateConnectionsTable(connectionData) {
     var connectionsTable = document.getElementById('connections-table');
-    connectionsTable.innerHTML = ''; // Réinitialise le contenu de la table
+    connectionsTable.innerHTML = '';
 
-    // Ajoute les lignes de données à la table
-    connectionData.forEach(function(data) {
+    connectionData.forEach(function (data) {
         var row = connectionsTable.insertRow();
         var localAddressCell = row.insertCell();
         var remoteAddressCell = row.insertCell();
@@ -128,8 +138,58 @@ function searchConnections() {
     }
 }
 
-// Appeler fetchData() et ajouter l'événement onchange pour le menu déroulant lors du chargement de la page
-document.addEventListener('DOMContentLoaded', function() {
+function checkPerformanceThresholds(cpuPercent, memoryPercent) {
+    if (cpuPercent > 90) {
+        sendNotification('High CPU Usage', `CPU usage is ${cpuPercent}%`);
+        playNotificationSound();
+    }
+
+    if (memoryPercent > 80) {
+        sendNotification('High Memory Usage', `Memory usage is ${memoryPercent}%`);
+        playNotificationSound();
+    }
+}
+
+function playNotificationSound() {
+    var audio = new Audio('{{ url_for("static", filename="notification_sound.wav") }}');
+    audio.play();
+}
+
+function sendNotification(title, message) {
+    var notificationsContainer = document.getElementById('notifications-container');
+    var notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.innerHTML = `<h3>${title}</h3><p>${message}</p>`;
+    notificationsContainer.appendChild(notification);
+    setTimeout(function () {
+        notification.remove();
+    }, 5000);
+}
+
+function refreshData() {
+    var cpuChartElement = document.getElementById('cpu-chart');
+    var memoryChartElement = document.getElementById('memory-chart');
+    var diskChartElement = document.getElementById('disk-chart');
+    var networkTable = document.getElementById('network-table');
+    var connectionsTable = document.getElementById('connections-table');
+
+    // Supprimer les anciens graphiques et tables
+    if (cpuChartElement) {
+        cpuChartElement.parentNode.removeChild(cpuChartElement);
+    }
+    if (memoryChartElement) {
+        memoryChartElement.parentNode.removeChild(memoryChartElement);
+    }
+    if (diskChartElement) {
+        diskChartElement.parentNode.removeChild(diskChartElement);
+    }
+    if (networkTable) {
+        networkTable.parentNode.removeChild(networkTable);
+    }
+    if (connectionsTable) {
+        connectionsTable.parentNode.removeChild(connectionsTable);
+    }
+
+    // Appeler la fonction fetchData pour récupérer les nouvelles données
     fetchData();
-    document.getElementById('interface-select').addEventListener('change', applyFilters);
-});
+}

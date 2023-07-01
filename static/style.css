@@ -3,8 +3,9 @@ body {
     font-family: 'Montserrat', sans-serif;
     color: #08376B;
     margin: 0;
-    padding: 20px;
+    padding: 30px;
 }
+
 .logo {
     max-width: 200px;
     margin-bottom: 20px;
@@ -16,6 +17,11 @@ h1 {
     margin-bottom: 20px;
 }
 
+.container {
+    margin: 0 auto;
+    max-width: 960px;
+}
+
 #charts-container {
     display: flex;
     flex-wrap: wrap;
@@ -24,14 +30,15 @@ h1 {
 }
 
 .chart-container {
-    flex: 1 1 300px;
+    flex: 1 1 100px;
     background-color: #FFFFFF;
     border-radius: 5px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     padding: 20px;
 }
 
-#network-container, #connections-container {
+#network-container,
+#connections-container {
     background-color: #FFFFFF;
     border-radius: 5px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
@@ -39,13 +46,16 @@ h1 {
     margin-bottom: 40px;
 }
 
-#network-table, #connections-table {
+#network-table,
+#connections-table {
     width: 100%;
     border-collapse: collapse;
 }
 
-#network-table th, #network-table td,
-#connections-table th, #connections-table td {
+#network-table th,
+#network-table td,
+#connections-table th,
+#connections-table td {
     padding: 8px;
     text-align: left;
     border-bottom: 1px solid #E0E0E0;
@@ -55,15 +65,10 @@ h1 {
     background-color: #F5F5F5;
 }
 
-#cpu-chart, #memory-chart, #disk-chart {
-    width: 100%;
-}
+#cpu-chart,
+#memory-chart,
+#disk-chart,
 
-@media screen and (max-width: 600px) {
-    .chart-container {
-        flex: 1 1 100%;
-    }
-}
 .custom-select {
     width: 200px;
     padding: 10px;
@@ -73,7 +78,8 @@ h1 {
     border: 1px solid #ccc;
     border-radius: 4px;
     outline: none;
-  }
+}
+
 #network-table th[data-sort] {
     cursor: pointer;
 }
@@ -85,13 +91,7 @@ h1 {
 #network-table th.sorted-desc::after {
     content: ' ▼';
 }
-#network-table th.sorted-asc::after {
-    content: ' \25B2';
-}
 
-#network-table th.sorted-desc::after {
-    content: ' \25BC';
-}
 .custom-button {
     background-color: #35C0ED;
     color: #ffffff;
@@ -100,20 +100,21 @@ h1 {
     font-size: 16px;
     border-radius: 4px;
     cursor: pointer;
-  }
-  
-  .custom-button:hover {
+}
+
+.custom-button:hover {
     background-color: #1E90FF;
-  }
-  .fa-sort {
+}
+
+.fa-sort {
     margin-left: 5px;
     transition: transform 0.3s ease-in-out;
-  }
-  
-  .fa-sort:hover {
+}
+
+.fa-sort:hover {
     transform: rotate(180deg);
-  }
-/* Barre de recherche */
+}
+
 .search-container {
     margin-bottom: 20px;
 }
@@ -139,4 +140,21 @@ h1 {
 .search-container .search-button i {
     margin-right: 5px;
 }
-    
+
+.connections-table-container {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+#connections-table {
+    width: 100%;
+}
+
+.network-table-container {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+#network-table {
+    width: 100%;
+}

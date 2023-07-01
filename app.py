@@ -3,6 +3,12 @@ import psutil
 
 app = Flask(__name__)
 
+# Liste pour stocker les seuils de performances
+performance_thresholds = {
+    'cpu': 90,  # Seuil d'utilisation du CPU (en pourcentage)
+    'memory': 80  # Seuil d'utilisation de la mémoire (en pourcentage)
+}
+
 # Route principale
 @app.route('/')
 def index():
@@ -16,6 +22,7 @@ def format_bytes(size, decimal_places=2):
             break
         size /= 1024.0
     return f"{size:.{decimal_places}f} {unit}"
+
 # Fonction pour obtenir les interfaces disponibles
 def get_available_interfaces():
     io_counters = psutil.net_io_counters(pernic=True)
@@ -65,7 +72,19 @@ def get_data():
         'connection_data': connection_data
     }
 
+    # Vérifier les seuils de performances et déclencher des notifications si nécessaire
+    check_performance_thresholds(cpu_percent, memory_percent)
+
     return jsonify(data)
+
+def check_performance_thresholds(cpu_percent, memory_percent):
+    if cpu_percent > performance_thresholds['cpu']:
+        # Dépassement du seuil d'utilisation du CPU
+        print('High CPU Usage')
+
+    if memory_percent > performance_thresholds['memory']:
+        # Dépassement du seuil d'utilisation de la mémoire
+        print('High Memory Usage')
 
 if __name__ == '__main__':
     app.run(debug=True)
